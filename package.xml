@@ -1,0 +1,12 @@
+<package>
+ <name>tf2_pointcloud</name>
+ <version>0.1.0</version>
+ <description>A node for transforming point clouds to a different TF frame.</description>
+ <author>Cameron Devine</author>
+ <license>BSD</license>
+ <maintainer email="camerondtrain@gmail.com"/>
+ <buildtool_depend>catkin</buildtool_depend>
+ <build_depend>libpcl-all-dev</build_depend>
+ <run_depend>libpcl-all</run_depend>
+ <build_depend>perception_pcl</build_depend>
+</package>
