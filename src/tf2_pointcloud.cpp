@@ -18,7 +18,7 @@ void cloud_cb(const sensor_msgs::PointCloud2ConstPtr& input) {
 
   geometry_msgs::TransformStamped tf_transform;
   try {
-    tf_transform = buffer.lookupTransform(input->header.frame_id, out_frame, ros::Time(0));
+    tf_transform = buffer.lookupTransform(out_frame, input->header.frame_id, ros::Time(0));
   } catch(tf2::TransformException &ex) {
     ROS_ERROR("Point cloud not transformed because: \"%s\"", ex.what());
     return;
@@ -44,12 +44,13 @@ int main(int argc, char** argv) {
   std::string in_topic = "scan";
   std::string out_topic = "scan_transformed";
   ros::init(argc, argv, "tf2_pointcloud");
-  ros::NodeHandle node("~");
-  node.getParam("in_topic", in_topic);
-  node.getParam("out_topic", out_topic);
-  node.getParam("out_frame", out_frame);
-  publisher = node.advertise<sensor_msgs::PointCloud2>(out_topic, 5);
-  ros::Subscriber sub = node.subscribe(in_topic, 5, cloud_cb);
+  ros::NodeHandle private_nh("~");
+  private_nh.getParam("in_topic", in_topic);
+  private_nh.getParam("out_topic", out_topic);
+  private_nh.getParam("out_frame", out_frame);
+  ros::NodeHandle root_nh;
+  publisher = root_nh.advertise<sensor_msgs::PointCloud2>(out_topic, 5);
+  ros::Subscriber sub = root_nh.subscribe(in_topic, 5, cloud_cb);
   tf2_ros::TransformListener listener(buffer);
   ros::spin();
 }
